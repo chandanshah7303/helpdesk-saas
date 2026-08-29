@@ -48,6 +48,12 @@ export const authMiddleware = async (req, res, next) => {
     if (error.name === "JsonWebTokenError") {
       return next(new ApiError("Invalid token",401));
     }
+
+      // Preserve intentionally thrown ApiError status codes
+    if (error instanceof ApiError) {
+      return next(error);
+    }
+    
     console.error(`[AUTH_ERROR]: ${error.message}`);
     return next(new ApiError("Internal server error",500));
   }
