@@ -6,32 +6,30 @@ node_modules/
 .env.*
 !.env.example
 
-# Logs
-*.log
-logs/
-
 # Build output
 dist/
 build/
 
-# Coverage
+# Test / Coverage
 coverage/
+.nyc_output/
 
-# Cache
-.cache/
-.vite/
+# Temporary files
+tmp/
+temp/
 
 # OS files
 .DS_Store
 Thumbs.db
 
-# IDE files
+# Editor directories
 .vscode/
 .idea/
 
-# Temporary files
-*.tmp
-*.temp
+# Logs
+*.log
+npm-debug.log*
 
-# Testing
-.nyc_output/
+# Miscellaneous
+*.swp
+*.swo
