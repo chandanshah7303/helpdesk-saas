@@ -1,6 +1,14 @@
-import { registerSchema, loginSchema } from "./auth.validation.js";
+import {
+  registerSchema,
+  loginSchema,
+  changePasswordSchema,
+} from "./auth.validation.js";
 
-import { registerService, loginService } from "./auth.service.js";
+import {
+  registerService,
+  loginService,
+  changePasswordService,
+} from "./auth.service.js";
 
 // REGISTER
 export const register = async (req, res, next) => {
@@ -30,6 +38,22 @@ export const login = async (req, res, next) => {
       success: true,
       message: "Login successful",
       data: result,
+    });
+  } catch (error) {
+    return next(error);
+  }
+};
+
+// CHANGE PASSWORD
+export const changePassword = async (req, res, next) => {
+  try {
+    const data = changePasswordSchema.parse(req.body);
+
+    const result = await changePasswordService(req.user._id, data);
+
+    return res.status(200).json({
+      success: true,
+      message: result.message,
     });
   } catch (error) {
     return next(error);

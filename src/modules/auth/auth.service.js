@@ -12,7 +12,7 @@ export const registerService = async (data) => {
 
   // Check Organization
   const organization = await Organization.findOne({
-    _id: organizationId, 
+    _id: organizationId,
     isActive: true,
   });
 
@@ -58,7 +58,7 @@ export const loginService = async (data) => {
 
   // Find User
   const user = await User.findOne({ email }).select("+password");
-  
+
   if (!user) {
     throw new ApiError("Invalid email or password", 401);
   }
@@ -109,5 +109,38 @@ export const loginService = async (data) => {
   return {
     token,
     user: safeUser,
+  };
+};
+
+// CHANGE PASSWORD
+export const changePasswordService = async (userId, data) => {
+  const { currentPassword, newPassword } = data;
+
+  // Find logged-in user
+  const user = await User.findById(userId).select("+password");
+
+  if (!user) {
+    throw new ApiError("User not found", 404);
+  }
+
+  // Check current password
+  const isMatch = await bcrypt.compare(currentPassword, user.password);
+
+  if (!isMatch) {
+    throw new ApiError("Current password is incorrect", 401);
+  }
+
+  // Hash new password
+  const saltRounds = 10;
+
+  const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
+
+  // Update password
+  user.password = hashedPassword;
+
+  await user.save();
+
+  return {
+    message: "Password changed successfully",
   };
 };
