@@ -39,8 +39,6 @@ function TicketDetails() {
 
             const result = await getTicketDetails(id);
 
-            console.log("TICKET DETAILS:", result);
-
             setDetails(result.data);
         } catch (error) {
             console.error(error);
@@ -173,11 +171,11 @@ function TicketDetails() {
     if (loading) {
         return (
             <div className="space-y-6">
-                <div className="h-8 w-40 animate-pulse rounded-lg bg-slate-800" />
+                <div className="h-8 w-40 animate-pulse rounded-lg bg-slate-200" />
 
-                <div className="h-48 animate-pulse rounded-2xl bg-slate-900" />
+                <div className="h-48 animate-pulse rounded-3xl bg-white shadow-sm ring-1 ring-slate-200" />
 
-                <div className="h-64 animate-pulse rounded-2xl bg-slate-900" />
+                <div className="h-64 animate-pulse rounded-3xl bg-white shadow-sm ring-1 ring-slate-200" />
             </div>
         );
     }
@@ -185,21 +183,21 @@ function TicketDetails() {
     // ERROR
     if (error) {
         return (
-            <div className="rounded-2xl border border-red-500/20 bg-red-500/10 p-6">
-                <p className="text-sm text-red-400">
+            <div className="rounded-2xl border border-red-200 bg-red-50 p-6">
+                <p className="text-sm text-red-700">
                     {error}
                 </p>
 
                 <button
                     onClick={() => navigate("/tickets")}
-                    className="mt-4 text-sm font-medium text-indigo-400 hover:text-indigo-300"
+                    className="mt-4 text-sm font-semibold text-indigo-600 hover:text-indigo-700"
                 >
                     ← Back to Tickets
                 </button>
             </div>
         );
     }
-
+  
     if (!details) {
         return null;
     }
@@ -207,36 +205,36 @@ function TicketDetails() {
     const { ticket, comments, history } = details;
 
     return (
-        <div className="space-y-6">
+        <div className="mx-auto max-w-6xl space-y-6">
 
             {/* BACK */}
             <button
                 onClick={() => navigate("/tickets")}
-                className="inline-flex items-center gap-2 text-sm text-slate-400 transition hover:text-white"
+                className="inline-flex items-center gap-2 text-sm font-medium text-slate-500 transition hover:text-indigo-600"
             >
                 <ArrowLeft size={17} />
                 Back to Tickets
             </button>
 
             {/* TICKET HEADER */}
-            <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-6">
+            <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-xl shadow-slate-200/60 sm:p-8">
 
                 <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
 
                     <div>
                         <div className="flex flex-wrap items-center gap-2">
 
-                            <span className="rounded-full bg-slate-800 px-3 py-1 text-xs font-medium text-slate-400">
+                            <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600">
                                 #{ticket._id.slice(-6)}
                             </span>
 
-                            <span className="rounded-full bg-slate-800 px-3 py-1 text-xs font-medium capitalize text-slate-400">
+                            <span className="rounded-full bg-indigo-50 px-3 py-1 text-xs font-semibold capitalize text-indigo-700">
                                 {ticket.categoryId?.name}
                             </span>
 
                         </div>
 
-                        <h1 className="mt-4 text-2xl font-semibold text-white">
+                        <h1 className="mt-4 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
                             {ticket.title}
                         </h1>
 
@@ -250,11 +248,11 @@ function TicketDetails() {
 
                     <div className="flex gap-2">
 
-                        <span className="rounded-full bg-orange-500/10 px-3 py-1.5 text-xs font-semibold uppercase text-orange-400">
+                        <span className="rounded-full bg-orange-50 px-3 py-1.5 text-xs font-bold uppercase tracking-wide text-orange-700 ring-1 ring-orange-200">
                             {ticket.priority}
                         </span>
 
-                        <span className="rounded-full bg-slate-800 px-3 py-1.5 text-xs font-semibold capitalize text-slate-300">
+                        <span className="rounded-full bg-indigo-50 px-3 py-1.5 text-xs font-bold capitalize text-indigo-700 ring-1 ring-indigo-100">
                             {ticket.status.replace(
                                 "_",
                                 " ",
@@ -266,54 +264,54 @@ function TicketDetails() {
                 </div>
 
                 {/* DESCRIPTION */}
-                <div className="mt-8 border-t border-slate-800 pt-6">
+                <div className="mt-8 border-t border-slate-100 pt-6">
 
-                    <h2 className="text-sm font-semibold text-white">
+                    <h2 className="text-sm font-bold text-slate-900">
                         Description
                     </h2>
 
-                    <p className="mt-3 whitespace-pre-wrap text-sm leading-6 text-slate-400">
+                    <p className="mt-3 whitespace-pre-wrap text-sm leading-7 text-slate-600">
                         {ticket.description}
                     </p>
 
                 </div>
 
                 {/* PEOPLE */}
-                <div className="mt-8 grid gap-4 border-t border-slate-800 pt-6 sm:grid-cols-2">
+                <div className="mt-8 grid gap-4 border-t border-slate-100 pt-6 sm:grid-cols-2">
 
                     {/* Requester */}
-                    <div className="rounded-xl bg-slate-950/60 p-4">
+                    <div className="rounded-2xl border border-slate-100 bg-slate-50 p-4">
 
-                        <div className="flex items-center gap-2 text-xs text-slate-500">
+                        <div className="flex items-center gap-2 text-xs font-medium text-slate-500">
                             <User size={15} />
                             Requester
                         </div>
 
-                        <p className="mt-2 text-sm font-medium text-white">
+                        <p className="mt-2 text-sm font-semibold text-slate-900">
                             {ticket.createdBy?.name}
                         </p>
 
-                        <p className="mt-1 text-xs text-slate-600">
+                        <p className="mt-1 text-xs text-slate-500">
                             {ticket.createdBy?.email}
                         </p>
 
                     </div>
 
                     {/* Assigned Agent */}
-                    <div className="rounded-xl bg-slate-950/60 p-4">
+                    <div className="rounded-2xl border border-slate-100 bg-slate-50 p-4">
 
-                        <div className="flex items-center gap-2 text-xs text-slate-500">
+                        <div className="flex items-center gap-2 text-xs font-medium text-slate-500">
                             <User size={15} />
                             Assigned Agent
                         </div>
 
-                        <p className="mt-2 text-sm font-medium text-white">
+                        <p className="mt-2 text-sm font-semibold text-slate-900">
                             {ticket.assignedTo?.name ||
                                 "Not assigned"}
                         </p>
 
                         {ticket.assignedTo?.email && (
-                            <p className="mt-1 text-xs text-slate-600">
+                            <p className="mt-1 text-xs text-slate-500">
                                 {ticket.assignedTo.email}
                             </p>
                         )}
@@ -325,16 +323,16 @@ function TicketDetails() {
 
             {/* ADMIN — ASSIGN TICKET */}
             {isAdmin && (
-                <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-6">
+                <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-xl shadow-slate-200/50 sm:p-7">
 
                     <div className="flex items-start gap-3">
 
-                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-indigo-500/10 text-indigo-400">
+                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 ring-1 ring-indigo-100">
                             <UserPlus size={18} />
                         </div>
 
                         <div>
-                            <h2 className="font-semibold text-white">
+                            <h2 className="font-bold text-slate-900">
                                 Assign Ticket
                             </h2>
 
@@ -355,7 +353,7 @@ function TicketDetails() {
                                 )
                             }
                             disabled={assigning}
-                            className="flex-1 rounded-xl border border-slate-800 bg-slate-950 px-4 py-3 text-sm text-white outline-none transition focus:border-indigo-500 disabled:cursor-not-allowed disabled:opacity-60"
+                            className="flex-1 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition hover:border-slate-300 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 disabled:cursor-not-allowed disabled:opacity-60"
                         >
 
                             <option value="">
@@ -381,7 +379,7 @@ function TicketDetails() {
                                 assigning ||
                                 !selectedAgent
                             }
-                            className="rounded-xl bg-indigo-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-indigo-500 disabled:cursor-not-allowed disabled:opacity-50"
+                            className="rounded-xl bg-indigo-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-600/20 transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-50"
                         >
                             {assigning
                                 ? "Assigning..."
@@ -402,16 +400,16 @@ function TicketDetails() {
             {/* STATUS ACTIONS */}
             {(currentUser?.role === "admin" ||
                 currentUser?.role === "agent") && (
-                    <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-6">
+                    <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-xl shadow-slate-200/50 sm:p-7">
 
                         <div className="flex items-start gap-3">
 
-                            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-indigo-500/10 text-indigo-400">
+                            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 ring-1 ring-indigo-100">
                                 <Clock size={18} />
                             </div>
 
                             <div>
-                                <h2 className="font-semibold text-white">
+                                <h2 className="font-bold text-slate-900">
                                     Ticket Status
                                 </h2>
 
@@ -481,20 +479,20 @@ function TicketDetails() {
                 )}
 
             {/* COMMENTS */}
-            <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-6">
+            <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-xl shadow-slate-200/50 sm:p-7">
 
                 <div className="flex items-center gap-2">
 
                     <MessageSquare
                         size={18}
-                        className="text-indigo-400"
+                        className="text-indigo-600"
                     />
 
-                    <h2 className="font-semibold text-white">
+                    <h2 className="font-bold text-slate-900">
                         Comments
                     </h2>
 
-                    <span className="rounded-full bg-slate-800 px-2 py-0.5 text-xs text-slate-400">
+                    <span className="rounded-full bg-indigo-50 px-2 py-0.5 text-xs font-semibold text-indigo-700">
                         {comments.length}
                     </span>
 
@@ -511,22 +509,22 @@ function TicketDetails() {
                         {comments.map((comment) => (
                             <div
                                 key={comment._id}
-                                className="border-b border-slate-800 pb-5 last:border-b-0 last:pb-0"
+                                className="border-b border-slate-100 pb-5 last:border-b-0 last:pb-0"
                             >
 
                                 <div className="flex items-center justify-between gap-3">
 
                                     <div>
-                                        <p className="text-sm font-medium text-white">
+                                        <p className="text-sm font-semibold text-slate-900">
                                             {comment.authorId?.name}
                                         </p>
 
-                                        <p className="text-xs capitalize text-slate-600">
+                                        <p className="text-xs capitalize text-slate-500">
                                             {comment.authorId?.role}
                                         </p>
                                     </div>
 
-                                    <span className="text-xs text-slate-600">
+                                    <span className="text-xs text-slate-400">
                                         {new Date(
                                             comment.createdAt,
                                         ).toLocaleString()}
@@ -534,7 +532,7 @@ function TicketDetails() {
 
                                 </div>
 
-                                <p className="mt-3 text-sm leading-6 text-slate-400">
+                                <p className="mt-3 text-sm leading-6 text-slate-600">
                                     {comment.message}
                                 </p>
 
@@ -546,11 +544,11 @@ function TicketDetails() {
 
                 {/* ADD COMMENT */}
                 {ticket.status !== "closed" && (
-                    <div className="mt-6 border-t border-slate-800 pt-6">
+                    <div className="mt-6 border-t border-slate-100 pt-6">
 
                         <label
                             htmlFor="comment"
-                            className="mb-2 block text-sm font-medium text-slate-200"
+                            className="mb-2 block text-sm font-semibold text-slate-700"
                         >
                             Add a comment
                         </label>
@@ -564,7 +562,7 @@ function TicketDetails() {
                             placeholder="Write your comment..."
                             rows={4}
                             disabled={addingComment}
-                            className="w-full resize-none rounded-xl border border-slate-800 bg-slate-950 px-4 py-3 text-sm text-white outline-none transition placeholder:text-slate-600 focus:border-indigo-500 disabled:cursor-not-allowed disabled:opacity-60"
+                            className="w-full resize-none rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 hover:border-slate-300 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 disabled:cursor-not-allowed disabled:opacity-60"
                         />
 
                         <div className="mt-3 flex justify-end">
@@ -576,7 +574,7 @@ function TicketDetails() {
                                     addingComment ||
                                     !commentMessage.trim()
                                 }
-                                className="rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-500 disabled:cursor-not-allowed disabled:opacity-50"
+                                className="rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-indigo-600/20 transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-50"
                             >
                                 {addingComment
                                     ? "Adding..."
@@ -589,7 +587,7 @@ function TicketDetails() {
                 )}
 
                 {ticket.status === "closed" && (
-                    <p className="mt-6 border-t border-slate-800 pt-6 text-sm text-slate-500">
+                    <p className="mt-6 border-t border-slate-100 pt-6 text-sm text-slate-500">
                         This ticket is closed. New comments cannot be added.
                     </p>
                 )}
@@ -597,16 +595,16 @@ function TicketDetails() {
             </div>
 
             {/* ACTIVITY */}
-            <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-6">
+            <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-xl shadow-slate-200/50 sm:p-7">
 
                 <div className="flex items-center gap-2">
 
                     <Activity
                         size={18}
-                        className="text-indigo-400"
+                        className="text-indigo-600"
                     />
 
-                    <h2 className="font-semibold text-white">
+                    <h2 className="font-bold text-slate-900">
                         Activity History
                     </h2>
 
@@ -625,13 +623,13 @@ function TicketDetails() {
                                 className="flex gap-4"
                             >
 
-                                <div className="mt-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-indigo-500/10 text-indigo-400">
+                                <div className="mt-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-indigo-50 text-indigo-600 ring-1 ring-indigo-100">
                                     <Clock size={15} />
                                 </div>
 
                                 <div>
 
-                                    <p className="text-sm font-medium text-white">
+                                    <p className="text-sm font-semibold text-slate-900">
                                         {item.action
                                             ?.replaceAll(
                                                 "_",
@@ -644,7 +642,7 @@ function TicketDetails() {
                                             )}
                                     </p>
 
-                                    <p className="mt-1 text-xs text-slate-600">
+                                    <p className="mt-1 text-xs text-slate-500">
                                         By{" "}
                                         {item.actorId?.name ||
                                             "System"}{" "}
@@ -656,7 +654,7 @@ function TicketDetails() {
 
                                     {item.oldValue &&
                                         item.newValue && (
-                                            <p className="mt-2 text-xs text-slate-500">
+                                            <p className="mt-2 text-xs text-slate-600">
                                                 {
                                                     item.oldValue
                                                 }{" "}

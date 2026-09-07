@@ -30,7 +30,10 @@ export const createOrganization = async (req, res, next) => {
 // GET ORGANIZATION
 export const getOrganizationById = async (req, res, next) => {
   try {
-    const organization = await getOrganizationByIdService(req.params.id);
+    const organization = await getOrganizationByIdService(
+      req.params.id,
+      req.user.organizationId,
+    );
 
     return res.status(200).json({
       success: true,
@@ -47,7 +50,11 @@ export const updateOrganization = async (req, res, next) => {
   try {
     const data = updateOrganizationSchema.parse(req.body);
 
-    const organization = await updateOrganizationService(req.params.id, data);
+    const organization = await updateOrganizationService(
+      req.params.id,
+      req.user.organizationId,
+      data,
+    );
 
     return res.status(200).json({
       success: true,
@@ -62,7 +69,10 @@ export const updateOrganization = async (req, res, next) => {
 // DEACTIVATE ORGANIZATION
 export const deactivateOrganization = async (req, res, next) => {
   try {
-    const organization = await deactivateOrganizationService(req.params.id);
+    const organization = await deactivateOrganizationService(
+      req.params.id,
+      req.user.organizationId,
+    );
 
     return res.status(200).json({
       success: true,

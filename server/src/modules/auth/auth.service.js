@@ -6,7 +6,7 @@ import Organization from "../organizations/organization.model.js";
 
 import { ApiError } from "../../utils/ApiError.js";
 
-// REGISTER USER
+// REGISTER USER FOR EXISTING ORGANIZATION
 export const registerService = async (data) => {
   const { organizationId, name, email, password } = data;
 
@@ -29,20 +29,32 @@ export const registerService = async (data) => {
     throw new ApiError("Email already exists", 409);
   }
 
+  const organizationUserCount = await User.countDocuments({
+    organizationId: organization._id,
+  });
+
+  if (organizationUserCount > 0) {
+    throw new ApiError(
+      "Administrator registration is only available for new organizations",
+      409,
+    );
+  }
+
   const saltRounds = 10;
 
   // Hash Password
   const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-  // Create User
+  // Create First User as Admin
   const user = await User.create({
     name,
     email,
     password: hashedPassword,
 
-    // First user will be admin
+    // First registered user becomes Admin
     role: "admin",
 
+    // Connect User to existing Organization
     organizationId: organization._id,
   });
 
@@ -57,7 +69,10 @@ export const loginService = async (data) => {
   const { email, password } = data;
 
   // Find User
-  const user = await User.findOne({ email }).select("+password");
+  const user = await User.findOne({
+    email,
+    isActive: true,
+  }).select("+password");
 
   if (!user) {
     throw new ApiError("Invalid email or password", 401);

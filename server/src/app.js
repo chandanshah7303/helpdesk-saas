@@ -19,13 +19,11 @@ const app = express();
 // Global Middleware
 app.use(express.json());
 app.use(logger);
-app.use(cors());
-// app.use(
-//   cors({
-//     origin: process.env.CLIENT_ORIGIN,
-//     credentials: true,
-//   })
-// );
+app.use(
+  cors({
+    origin: process.env.CLIENT_ORIGIN || "http://localhost:5173",
+  }),
+);
 
 // Routes
 app.use("/api/organizations", organizationRoutes);

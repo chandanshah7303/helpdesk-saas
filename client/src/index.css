@@ -1,1 +1,102 @@
 @import "tailwindcss";
+
+@layer base {
+	body {
+		background: var(--app-canvas);
+	}
+
+	*:focus-visible {
+		outline: 2px solid #818cf8;
+		outline-offset: 2px;
+	}
+}
+
+:root {
+	--app-canvas: #edf2f7;
+	--app-subtle: #f5f7fb;
+	--app-surface: #fbfcff;
+}
+
+[class~="bg-slate-50"] {
+	background-color: var(--app-canvas);
+}
+
+[class~="bg-white"],
+[class~="bg-white/70"],
+[class~="bg-white/80"] {
+	background-color: var(--app-surface);
+}
+
+/* Keep every authenticated screen in the same light indigo language as Login. */
+.dashboard-light [class~="bg-slate-950"],
+.dashboard-light [class~="bg-slate-950/60"],
+.dashboard-light [class~="bg-slate-900"],
+.dashboard-light [class~="bg-slate-900/60"],
+.dashboard-light [class~="bg-slate-900/70"],
+.dashboard-light [class~="bg-slate-900/80"],
+.dashboard-light [class~="bg-slate-900/90"] {
+	background-color: var(--app-surface);
+}
+
+.dashboard-light [class~="bg-white/[0.02]"],
+.dashboard-light [class~="bg-white/[0.025]"],
+.dashboard-light [class~="bg-white/[0.03]"],
+.dashboard-light [class~="bg-white/2"],
+.dashboard-light [class~="bg-white/2.5"],
+.dashboard-light [class~="bg-white/3"] {
+	background-color: var(--app-subtle);
+}
+
+.dashboard-light [class~="text-white"] {
+	color: #0f172a;
+}
+
+.dashboard-light [class~="text-slate-100"],
+.dashboard-light [class~="text-slate-200"],
+.dashboard-light [class~="text-slate-300"] {
+	color: #334155;
+}
+
+.dashboard-light [class~="text-slate-400"],
+.dashboard-light [class~="text-slate-500"] {
+	color: #64748b;
+}
+
+.dashboard-light [class~="text-slate-600"],
+.dashboard-light [class~="text-slate-700"] {
+	color: #94a3b8;
+}
+
+.dashboard-light [class~="border-slate-800"],
+.dashboard-light [class~="border-slate-800/70"],
+.dashboard-light [class~="border-slate-800/80"],
+.dashboard-light [class~="border-white/[0.05]"],
+.dashboard-light [class~="border-white/[0.06]"],
+.dashboard-light [class~="border-white/[0.07]"],
+.dashboard-light [class~="border-white/[0.08]"],
+.dashboard-light [class~="border-white/5"],
+.dashboard-light [class~="border-white/6"],
+.dashboard-light [class~="border-white/7"],
+.dashboard-light [class~="border-white/8"] {
+	border-color: #e2e8f0;
+}
+
+.dashboard-light [class~="hover:bg-slate-800/30"]:hover,
+.dashboard-light [class~="hover:bg-slate-800"]:hover,
+.dashboard-light [class~="hover:bg-white/4"]:hover,
+.dashboard-light [class~="hover:bg-indigo-500/[0.045]"]:hover {
+	background-color: #eef2ff;
+}
+
+.dashboard-light input,
+.dashboard-light textarea,
+.dashboard-light select {
+	border-color: #e2e8f0;
+	background-color: var(--app-surface);
+	color: #0f172a;
+}
+
+.dashboard-light input::placeholder,
+.dashboard-light textarea::placeholder {
+	color: #94a3b8;
+}

@@ -26,9 +26,6 @@ function AgentDashboard() {
             getTickets({ page: 1, limit: 5 }),
           ]);
 
-        console.log("AGENT DASHBOARD:", dashboardResult);
-        console.log("AGENT TICKETS:", ticketsResult);
-
         setDashboard(dashboardResult.data);
         setRecentTickets(ticketsResult.data.tickets || []);
       } catch (error) {
@@ -102,19 +99,19 @@ function AgentDashboard() {
   ];
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-7">
 
       {/* Header */}
       <div>
-        <p className="text-sm font-medium text-indigo-400">
+        <p className="text-xs font-semibold uppercase tracking-[0.14em] text-indigo-300">
           Agent Workspace
         </p>
 
-        <h1 className="mt-1 text-3xl font-bold tracking-tight text-white">
+        <h1 className="mt-2 text-3xl font-bold tracking-[-0.03em] text-white">
           Agent Dashboard
         </h1>
 
-        <p className="mt-2 text-sm text-slate-500">
+        <p className="mt-2 text-sm text-slate-400">
           Track and manage the tickets assigned to you.
         </p>
       </div>
@@ -127,7 +124,7 @@ function AgentDashboard() {
           return (
             <div
               key={stat.label}
-              className="group rounded-2xl border border-slate-800 bg-slate-900/60 p-5 transition hover:-translate-y-0.5 hover:border-slate-700 hover:bg-slate-900"
+              className="group rounded-2xl border border-white/[0.07] bg-slate-900/80 p-5 shadow-xl shadow-black/10 transition hover:-translate-y-0.5 hover:border-indigo-400/20 hover:bg-slate-900"
             >
               <div className="flex items-start justify-between">
                 <div>
@@ -140,7 +137,7 @@ function AgentDashboard() {
                   </p>
                 </div>
 
-                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-indigo-500/10 text-indigo-400">
+                <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-indigo-400/15 bg-indigo-500/10 text-indigo-300">
                   <Icon size={21} />
                 </div>
               </div>
@@ -154,9 +151,9 @@ function AgentDashboard() {
       </div>
 
       {/* Recent Tickets */}
-      <div className="rounded-2xl border border-slate-800 bg-slate-900/60">
+      <div className="rounded-2xl border border-white/[0.07] bg-slate-900/80 shadow-xl shadow-black/10">
 
-        <div className="flex items-center justify-between border-b border-slate-800 p-6">
+        <div className="flex items-center justify-between border-b border-white/[0.06] p-6">
           <div>
             <h2 className="text-lg font-semibold text-white">
               Recent Assigned Tickets
@@ -195,7 +192,7 @@ function AgentDashboard() {
                 onClick={() =>
                   navigate(`/tickets/${ticket._id}`)
                 }
-                className="flex w-full items-center justify-between gap-4 p-5 text-left transition hover:bg-slate-800/30"
+                className="flex w-full items-center justify-between gap-4 border-b border-white/[0.05] p-5 text-left transition last:border-0 hover:bg-indigo-500/[0.045]"
               >
                 <div className="min-w-0">
                   <div className="flex items-center gap-2">
@@ -242,7 +239,7 @@ function AgentDashboard() {
           </div>
         )}
 
-        <div className="border-t border-slate-800 p-4 sm:hidden">
+        <div className="border-t border-white/[0.06] p-4 sm:hidden">
           <button
             onClick={() => navigate("/tickets")}
             className="flex w-full items-center justify-center gap-2 rounded-xl bg-slate-800 px-4 py-3 text-sm font-medium text-slate-300 transition hover:bg-slate-700"

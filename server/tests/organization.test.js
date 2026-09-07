@@ -3,6 +3,23 @@ import request from "supertest";
 
 import app from "../src/app.js";
 import Organization from "../src/modules/organizations/organization.model.js";
+import User from "../src/modules/users/user.model.js";
+import jwt from "jsonwebtoken";
+
+let currentOrganizationId;
+
+const authorization = (organizationId) => {
+  currentOrganizationId = organizationId;
+
+  return `Bearer ${jwt.sign(
+    {
+      userId: "507f1f77bcf86cd799439010",
+      organizationId,
+      role: "admin",
+    },
+    process.env.JWT_SECRET,
+  )}`;
+};
 
 // --------------------------------------------------
 // ORGANIZATION API TESTS
@@ -11,6 +28,17 @@ import Organization from "../src/modules/organizations/organization.model.js";
 describe("Organization API", () => {
   beforeEach(() => {
     vi.restoreAllMocks();
+
+    vi.spyOn(User, "findById").mockReturnValue({
+      select: vi.fn().mockImplementation(async () => ({
+        _id: "507f1f77bcf86cd799439010",
+        name: "Test Admin",
+        email: "admin@test.com",
+        role: "admin",
+        organizationId: currentOrganizationId,
+        isActive: true,
+      })),
+    });
   });
 
   // ------------------------------------------------
@@ -117,6 +145,27 @@ describe("Organization API", () => {
     expect(createSpy).not.toHaveBeenCalled();
   });
 
+  it("should reject organization management without authentication", async () => {
+    const response = await request(app).get(
+      "/api/organizations/507f1f77bcf86cd799439015",
+    );
+
+    expect(response.status).toBe(401);
+    expect(response.body.message).toBe("Authorization header missing");
+  });
+
+  it("should not allow an admin to manage another organization", async () => {
+    const organizationId = "507f1f77bcf86cd799439015";
+    const otherOrganizationId = "507f1f77bcf86cd799439016";
+
+    const response = await request(app)
+      .get(`/api/organizations/${organizationId}`)
+      .set("Authorization", authorization(otherOrganizationId));
+
+    expect(response.status).toBe(404);
+    expect(response.body.message).toBe("Organization not found");
+  });
+
   // ------------------------------------------------
   // GET ORGANIZATION — SUCCESS
   // ------------------------------------------------
@@ -132,9 +181,9 @@ describe("Organization API", () => {
 
     vi.spyOn(Organization, "findById").mockResolvedValue(fakeOrganization);
 
-    const response = await request(app).get(
-      `/api/organizations/${fakeOrganization._id}`,
-    );
+    const response = await request(app)
+      .get(`/api/organizations/${fakeOrganization._id}`)
+      .set("Authorization", authorization(fakeOrganization._id));
 
     expect(response.status).toBe(200);
 
@@ -164,9 +213,9 @@ describe("Organization API", () => {
 
     vi.spyOn(Organization, "findById").mockResolvedValue(null);
 
-    const response = await request(app).get(
-      `/api/organizations/${organizationId}`,
-    );
+    const response = await request(app)
+      .get(`/api/organizations/${organizationId}`)
+      .set("Authorization", authorization(organizationId));
 
     expect(response.status).toBe(404);
 
@@ -200,6 +249,7 @@ describe("Organization API", () => {
 
     const response = await request(app)
       .patch(`/api/organizations/${organizationId}`)
+      .set("Authorization", authorization(organizationId))
       .send({
         name: "New Company",
         description: "Updated company description",
@@ -233,6 +283,7 @@ describe("Organization API", () => {
 
     const response = await request(app)
       .patch(`/api/organizations/${organizationId}`)
+      .set("Authorization", authorization(organizationId))
       .send({
         name: "Updated Company",
       });
@@ -277,6 +328,7 @@ describe("Organization API", () => {
 
     const response = await request(app)
       .patch(`/api/organizations/${organizationId}`)
+      .set("Authorization", authorization(organizationId))
       .send({
         slug: "another-company",
       });
@@ -309,6 +361,7 @@ describe("Organization API", () => {
 
     const response = await request(app)
       .patch(`/api/organizations/${organizationId}`)
+      .set("Authorization", authorization(organizationId))
       .send({});
 
     expect(response.status).toBe(400);
@@ -337,9 +390,9 @@ describe("Organization API", () => {
 
     vi.spyOn(Organization, "findById").mockResolvedValue(fakeOrganization);
 
-    const response = await request(app).patch(
-      `/api/organizations/${organizationId}/deactivate`,
-    );
+    const response = await request(app)
+      .patch(`/api/organizations/${organizationId}/deactivate`)
+      .set("Authorization", authorization(organizationId));
 
     expect(response.status).toBe(200);
 
@@ -377,9 +430,9 @@ describe("Organization API", () => {
 
     vi.spyOn(Organization, "findById").mockResolvedValue(fakeOrganization);
 
-    const response = await request(app).patch(
-      `/api/organizations/${organizationId}/deactivate`,
-    );
+    const response = await request(app)
+      .patch(`/api/organizations/${organizationId}/deactivate`)
+      .set("Authorization", authorization(organizationId));
 
     expect(response.status).toBe(400);
 
@@ -405,9 +458,9 @@ describe("Organization API", () => {
 
     vi.spyOn(Organization, "findById").mockResolvedValue(null);
 
-    const response = await request(app).patch(
-      `/api/organizations/${organizationId}/deactivate`,
-    );
+    const response = await request(app)
+      .patch(`/api/organizations/${organizationId}/deactivate`)
+      .set("Authorization", authorization(organizationId));
 
     expect(response.status).toBe(404);
 

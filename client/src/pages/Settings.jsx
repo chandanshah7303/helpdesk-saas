@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
     User,
     Building2,
@@ -11,6 +11,11 @@ import toast from "react-hot-toast";
 
 import { useAuth } from "../context/AuthContext.jsx";
 import { changePassword } from "../services/auth.service.js";
+import {
+    getOrganizationById,
+    updateOrganization,
+    deactivateOrganization,
+} from "../services/organization.service.js";
 
 function Settings() {
     const { user } = useAuth();
@@ -24,6 +29,107 @@ function Settings() {
     });
 
     const [changingPassword, setChangingPassword] = useState(false);
+
+    const [organization, setOrganization] = useState(null);
+    const [organizationForm, setOrganizationForm] = useState({
+        name: "",
+        slug: "",
+        description: "",
+    });
+    const [loadingOrganization, setLoadingOrganization] = useState(false);
+    const [savingOrganization, setSavingOrganization] = useState(false);
+    const [deactivatingOrganization, setDeactivatingOrganization] = useState(false);
+
+    const isAdmin = user?.role === "admin";
+
+    useEffect(() => {
+        if (!isAdmin || !user?.organizationId) return;
+
+        const loadOrganization = async () => {
+            try {
+                setLoadingOrganization(true);
+
+                const response = await getOrganizationById(user.organizationId);
+                const data = response.data;
+
+                setOrganization(data);
+                setOrganizationForm({
+                    name: data.name || "",
+                    slug: data.slug || "",
+                    description: data.description || "",
+                });
+            } catch (error) {
+                toast.error(
+                    error.response?.data?.message ||
+                    "Failed to load organization",
+                );
+            } finally {
+                setLoadingOrganization(false);
+            }
+        };
+
+        loadOrganization();
+    }, [isAdmin, user?.organizationId]);
+
+    const handleOrganizationChange = (event) => {
+        const { name, value } = event.target;
+
+        setOrganizationForm((previous) => ({
+            ...previous,
+            [name]: value,
+        }));
+    };
+
+    const handleOrganizationSave = async (event) => {
+        event.preventDefault();
+
+        if (!organizationForm.name.trim() || !organizationForm.slug.trim()) {
+            toast.error("Organization name and slug are required");
+            return;
+        }
+
+        try {
+            setSavingOrganization(true);
+
+            const response = await updateOrganization(
+                user.organizationId,
+                {
+                    name: organizationForm.name.trim(),
+                    slug: organizationForm.slug.trim().toLowerCase(),
+                    description: organizationForm.description.trim(),
+                },
+            );
+
+            setOrganization(response.data);
+            toast.success("Organization updated successfully");
+        } catch (error) {
+            toast.error(
+                error.response?.data?.message ||
+                "Failed to update organization",
+            );
+        } finally {
+            setSavingOrganization(false);
+        }
+    };
+
+    const handleOrganizationDeactivate = async () => {
+        if (!window.confirm("Deactivate this organization? This will disable access for all members.")) {
+            return;
+        }
+
+        try {
+            setDeactivatingOrganization(true);
+            await deactivateOrganization(user.organizationId);
+            toast.success("Organization deactivated");
+        } catch (error) {
+            toast.error(
+                error.response?.data?.message ||
+                "Failed to deactivate organization",
+            );
+        } finally {
+            setDeactivatingOrganization(false);
+        }
+    };
 
     const handlePasswordChange = (e) => {
         const { name, value } = e.target;
@@ -109,8 +215,8 @@ function Settings() {
             </div>
 
             {/* Account Information */}
-            <section className="rounded-2xl border border-slate-800 bg-slate-900">
-                <div className="border-b border-slate-800 p-5">
+            <section className="rounded-2xl border border-white/[0.07] bg-slate-900/80 shadow-xl shadow-black/10">
+                    <div className="border-b border-white/6 p-5">
                     <div className="flex items-center gap-3">
                         <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-600/15 text-indigo-400">
                             <User size={19} />
@@ -177,7 +283,7 @@ function Settings() {
             </section>
 
             {/* Workspace */}
-            <section className="rounded-2xl border border-slate-800 bg-slate-900">
+            <section className="rounded-2xl border border-white/[0.07] bg-slate-900/80 shadow-xl shadow-black/10">
                 <div className="border-b border-slate-800 p-5">
                     <div className="flex items-center gap-3">
                         <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-600/15 text-indigo-400">
@@ -209,8 +315,105 @@ function Settings() {
                 </div>
             </section>
 
+            {isAdmin && (
+                <section className="rounded-2xl border border-white/[0.07] bg-slate-900/80 shadow-xl shadow-black/10">
+                    <div className="border-b border-slate-800 p-5">
+                        <div className="flex items-center gap-3">
+                            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-600/15 text-indigo-400">
+                                <Building2 size={19} />
+                            </div>
+
+                            <div>
+                                <h2 className="text-sm font-semibold text-white">
+                                    Organization Settings
+                                </h2>
+
+                                <p className="text-xs text-slate-500">
+                                    Update your organization profile and workspace identity.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <form onSubmit={handleOrganizationSave} className="space-y-5 p-5">
+                        {loadingOrganization ? (
+                            <div className="h-32 animate-pulse rounded-xl bg-slate-800" />
+                        ) : (
+                            <>
+                                <div className="grid gap-5 sm:grid-cols-2">
+                                    <div>
+                                        <label htmlFor="organization-name" className="mb-2 block text-xs font-medium text-slate-400">
+                                            Organization name
+                                        </label>
+                                        <input
+                                            id="organization-name"
+                                            name="name"
+                                            value={organizationForm.name}
+                                            onChange={handleOrganizationChange}
+                                            className="w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-2.5 text-sm text-white outline-none transition focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10"
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <label htmlFor="organization-slug" className="mb-2 block text-xs font-medium text-slate-400">
+                                            Workspace slug
+                                        </label>
+                                        <input
+                                            id="organization-slug"
+                                            name="slug"
+                                            value={organizationForm.slug}
+                                            onChange={handleOrganizationChange}
+                                            className="w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-2.5 text-sm text-white outline-none transition focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10"
+                                        />
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label htmlFor="organization-description" className="mb-2 block text-xs font-medium text-slate-400">
+                                        Description
+                                    </label>
+                                    <textarea
+                                        id="organization-description"
+                                        name="description"
+                                        value={organizationForm.description}
+                                        onChange={handleOrganizationChange}
+                                        rows={3}
+                                        className="w-full resize-none rounded-xl border border-slate-700 bg-slate-950 px-4 py-2.5 text-sm text-white outline-none transition focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10"
+                                    />
+                                </div>
+
+                                <div className="flex flex-col gap-3 border-t border-slate-800 pt-5 sm:flex-row sm:items-center sm:justify-between">
+                                    <p className="text-xs text-slate-500">
+                                        {organization?.isActive ? "Workspace is active" : "Workspace is inactive"}
+                                    </p>
+
+                                    <div className="flex flex-col-reverse gap-3 sm:flex-row">
+                                        <button
+                                            type="button"
+                                            onClick={handleOrganizationDeactivate}
+                                            disabled={deactivatingOrganization || !organization?.isActive}
+                                            className="rounded-xl border border-red-200 px-4 py-2.5 text-sm font-semibold text-red-600 transition hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-50"
+                                        >
+                                            {deactivatingOrganization ? "Deactivating..." : "Deactivate workspace"}
+                                        </button>
+
+                                        <button
+                                            type="submit"
+                                            disabled={savingOrganization || !organization?.isActive}
+                                            className="rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-indigo-600/20 transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-50"
+                                        >
+                                            {savingOrganization ? "Saving..." : "Save changes"}
+                                        </button>
+                                    </div>
+                                </div>
+                            </>
+                        )}
+                    </form>
+                </section>
+            )}
+
             {/* Notifications */}
-            <section className="rounded-2xl border border-slate-800 bg-slate-900">
+            <section className="rounded-2xl border border-white/[0.07] bg-slate-900/80 shadow-xl shadow-black/10">
                 <div className="border-b border-slate-800 p-5">
                     <div className="flex items-center gap-3">
                         <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-600/15 text-indigo-400">
@@ -243,7 +446,7 @@ function Settings() {
             </section>
 
             {/* Security */}
-            <section className="rounded-2xl border border-slate-800 bg-slate-900">
+            <section className="rounded-2xl border border-white/[0.07] bg-slate-900/80 shadow-xl shadow-black/10">
 
                 <div className="border-b border-slate-800 p-5">
                     <div className="flex items-center gap-3">
@@ -279,7 +482,7 @@ function Settings() {
                         <button
                             type="button"
                             onClick={() => setShowChangePassword(true)}
-                            className="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-indigo-500"
+                            className="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-500 px-4 py-2 text-sm font-medium text-white shadow-lg shadow-indigo-950/30 transition hover:bg-indigo-400"
                         >
                             <Lock size={16} />
                             Change Password

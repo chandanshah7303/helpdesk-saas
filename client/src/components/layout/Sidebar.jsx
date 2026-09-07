@@ -43,7 +43,7 @@ function Sidebar({ onNavigate }) {
             label: "Settings",
             path: "/settings",
             icon: Settings,
-            roles: ["admin","agent", "requester"],
+            roles: ["admin", "agent", "requester"],
         },
     ];
 
@@ -55,17 +55,20 @@ function Sidebar({ onNavigate }) {
         logout();
         navigate("/login");
 
-        // Close mobile sidebar if open
         if (onNavigate) {
             onNavigate();
         }
     };
 
     return (
-        <div className="flex h-full flex-col">
+        <div className="flex h-full flex-col bg-white">
 
-            {/* Brand */}
-            <div className="flex h-16 items-center border-b border-slate-800 px-5">
+            {/* =====================================================
+                BRAND
+            ====================================================== */}
+
+            <div className="flex h-16 shrink-0 items-center border-b border-slate-200 px-5">
+
                 <div className="flex items-center gap-3">
 
                     <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-indigo-600 text-sm font-bold text-white shadow-lg shadow-indigo-600/20">
@@ -73,67 +76,110 @@ function Sidebar({ onNavigate }) {
                     </div>
 
                     <div>
-                        <p className="text-sm font-semibold tracking-tight text-white">
+                        <p className="text-sm font-bold tracking-tight text-slate-900">
                             Helpdesk
                         </p>
 
-                        <p className="text-[11px] text-slate-500">
-                            SaaS Platform
+                        <p className="text-[10px] font-medium tracking-[0.08em] text-slate-400">
+                            SAAS PLATFORM
                         </p>
                     </div>
 
                 </div>
             </div>
 
-            {/* Navigation */}
-            <nav className="flex-1 space-y-1 px-3 py-5">
+            {/* =====================================================
+                NAVIGATION
+            ====================================================== */}
 
-                <p className="mb-3 px-3 text-[11px] font-semibold uppercase tracking-wider text-slate-600">
+            <nav className="flex-1 overflow-y-auto px-3 py-6">
+
+                            <p className="mb-3 px-3 text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400">
                     Workspace
                 </p>
 
-                {visibleNavigation.map((item) => {
-                    const Icon = item.icon;
+                <div className="space-y-1">
 
-                    return (
-                        <NavLink
-                            key={item.path}
-                            to={item.path}
-                            onClick={onNavigate}
-                            className={({ isActive }) =>
-                                `group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all ${isActive
-                                    ? "bg-indigo-600/15 text-indigo-400"
-                                    : "text-slate-400 hover:bg-slate-800/70 hover:text-slate-200"
-                                }`
-                            }
-                        >
-                            {({ isActive }) => (
-                                <>
-                                    <Icon
-                                        size={18}
-                                        strokeWidth={isActive ? 2.3 : 1.8}
-                                        className="shrink-0"
-                                    />
+                    {visibleNavigation.map((item) => {
+                        const Icon = item.icon;
 
-                                    <span>{item.label}</span>
-                                </>
-                            )}
-                        </NavLink>
-                    );
-                })}
+                        return (
+                            <NavLink
+                                key={item.path}
+                                to={item.path}
+                                onClick={onNavigate}
+                                className={({ isActive }) =>
+                                    `group relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-150 ${isActive
+                                        ? "bg-indigo-50 text-indigo-700"
+                                        : "text-slate-500 hover:bg-slate-50 hover:text-slate-900"
+                                    }`
+                                }
+                            >
+                                {({ isActive }) => (
+                                    <>
+                                        {/* Active indicator */}
+
+                                        {isActive && (
+                                            <span className="absolute left-0 top-1/2 h-6 w-0.5 -translate-y-1/2 rounded-full bg-indigo-600" />
+                                        )}
+
+                                        {/* Icon */}
+
+                                        <span
+                                            className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg transition ${isActive
+                                                    ? "bg-indigo-100 text-indigo-600"
+                                                    : "text-slate-400 group-hover:bg-slate-100 group-hover:text-slate-700"
+                                                }`}
+                                        >
+                                            <Icon
+                                                size={17}
+                                                strokeWidth={
+                                                    isActive ? 2.2 : 1.8
+                                                }
+                                            />
+                                        </span>
+
+                                        {/* Label */}
+
+                                        <span className="flex-1">
+                                            {item.label}
+                                        </span>
+
+                                        {/* Active dot */}
+
+                                        {isActive && (
+                                            <span className="h-1.5 w-1.5 rounded-full bg-indigo-600" />
+                                        )}
+                                    </>
+                                )}
+                            </NavLink>
+                        );
+                    })}
+
+                </div>
             </nav>
 
-            {/* User Section */}
-            <div className="border-t border-slate-800 p-3">
+            {/* =====================================================
+                LOGOUT
+            ====================================================== */}
+
+            <div className="border-t border-slate-200 p-3">
 
                 <button
                     type="button"
                     onClick={handleLogout}
-                    className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-slate-400 transition hover:bg-red-500/10 hover:text-red-400"
+                    className="group flex w-full items-center gap-3 rounded-xl border border-transparent px-3 py-2.5 text-sm font-semibold text-slate-500 transition-all duration-150 hover:border-red-200 hover:bg-red-50 hover:text-red-600"
                 >
-                    <LogOut size={18} strokeWidth={1.8} />
+                    <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100 text-slate-500 transition group-hover:bg-red-100 group-hover:text-red-600">
+                        <LogOut
+                            size={17}
+                            strokeWidth={1.8}
+                        />
+                    </span>
 
-                    <span>Logout</span>
+                    <span>
+                        Sign out
+                    </span>
                 </button>
 
             </div>

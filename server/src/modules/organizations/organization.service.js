@@ -21,7 +21,14 @@ export const createOrganizationService = async (data) => {
 };
 
 // GET ORGANIZATION BY ID
-export const getOrganizationByIdService = async (organizationId) => {
+export const getOrganizationByIdService = async (
+  organizationId,
+  requesterOrganizationId,
+) => {
+  if (organizationId.toString() !== requesterOrganizationId.toString()) {
+    throw new ApiError("Organization not found", 404);
+  }
+
   const organization = await Organization.findById(organizationId);
 
   if (!organization) {
@@ -32,7 +39,15 @@ export const getOrganizationByIdService = async (organizationId) => {
 };
 
 // UPDATE ORGANIZATION
-export const updateOrganizationService = async (organizationId, data) => {
+export const updateOrganizationService = async (
+  organizationId,
+  requesterOrganizationId,
+  data,
+) => {
+  if (organizationId.toString() !== requesterOrganizationId.toString()) {
+    throw new ApiError("Organization not found", 404);
+  }
+
   const organization = await Organization.findById(organizationId);
 
   if (!organization) {
@@ -69,7 +84,14 @@ export const updateOrganizationService = async (organizationId, data) => {
 };
 
 // DEACTIVATE ORGANIZATION
-export const deactivateOrganizationService = async (organizationId) => {
+export const deactivateOrganizationService = async (
+  organizationId,
+  requesterOrganizationId,
+) => {
+  if (organizationId.toString() !== requesterOrganizationId.toString()) {
+    throw new ApiError("Organization not found", 404);
+  }
+
   const organization = await Organization.findById(organizationId);
 
   if (!organization) {

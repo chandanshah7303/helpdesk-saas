@@ -32,16 +32,6 @@ function RequesterDashboard() {
             getTickets({ page: 1, limit: 5 }),
           ]);
 
-        console.log(
-          "REQUESTER DASHBOARD:",
-          dashboardResult,
-        );
-
-        console.log(
-          "REQUESTER TICKETS:",
-          ticketsResult,
-        );
-
         setDashboard(dashboardResult.data);
 
         setRecentTickets(
@@ -129,27 +119,27 @@ function RequesterDashboard() {
   ];
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-7">
 
       {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <p className="text-sm font-medium text-indigo-400">
+          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-indigo-300">
             Support Workspace
           </p>
 
-          <h1 className="mt-1 text-3xl font-bold tracking-tight text-white">
+          <h1 className="mt-2 text-3xl font-bold tracking-[-0.03em] text-white">
             Requester Dashboard
           </h1>
 
-          <p className="mt-2 text-sm text-slate-500">
+          <p className="mt-2 text-sm text-slate-400">
             Track your support requests and their progress.
           </p>
         </div>
 
         <button
           onClick={() => navigate("/tickets/create")}
-          className="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-indigo-600/20 transition hover:bg-indigo-500"
+          className="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-500 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-indigo-950/40 transition hover:bg-indigo-400"
         >
           <Plus size={17} />
           Create Ticket
@@ -164,7 +154,7 @@ function RequesterDashboard() {
           return (
             <div
               key={stat.label}
-              className="group rounded-2xl border border-slate-800 bg-slate-900/60 p-5 transition hover:-translate-y-0.5 hover:border-slate-700 hover:bg-slate-900"
+              className="group rounded-2xl border border-white/[0.07] bg-slate-900/80 p-5 shadow-xl shadow-black/10 transition hover:-translate-y-0.5 hover:border-indigo-400/20 hover:bg-slate-900"
             >
               <div className="flex items-start justify-between">
                 <div>
@@ -177,7 +167,7 @@ function RequesterDashboard() {
                   </p>
                 </div>
 
-                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-indigo-500/10 text-indigo-400">
+                <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-indigo-400/15 bg-indigo-500/10 text-indigo-300">
                   <Icon size={21} />
                 </div>
               </div>
@@ -191,9 +181,9 @@ function RequesterDashboard() {
       </div>
 
       {/* Recent Tickets */}
-      <div className="rounded-2xl border border-slate-800 bg-slate-900/60">
+      <div className="rounded-2xl border border-white/[0.07] bg-slate-900/80 shadow-xl shadow-black/10">
 
-        <div className="flex items-center justify-between border-b border-slate-800 p-6">
+        <div className="flex items-center justify-between border-b border-white/[0.06] p-6">
           <div>
             <h2 className="text-lg font-semibold text-white">
               My Recent Tickets
@@ -235,7 +225,7 @@ function RequesterDashboard() {
             </button>
           </div>
         ) : (
-          <div className="divide-y divide-slate-800">
+          <div className="divide-y divide-white/[0.05]">
             {recentTickets.map((ticket) => (
               <button
                 key={ticket._id}
@@ -244,7 +234,7 @@ function RequesterDashboard() {
                     `/tickets/${ticket._id}`,
                   )
                 }
-                className="flex w-full items-center justify-between gap-4 p-5 text-left transition hover:bg-slate-800/30"
+                className="flex w-full items-center justify-between gap-4 border-b border-white/[0.05] p-5 text-left transition last:border-0 hover:bg-indigo-500/[0.045]"
               >
                 <div className="min-w-0">
                   <div className="flex items-center gap-2">

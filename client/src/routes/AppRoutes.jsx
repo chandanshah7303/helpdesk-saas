@@ -1,7 +1,8 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 import Login from "../pages/auth/Login.jsx";
 import Register from "../pages/auth/Register.jsx";
+import CreateOrganization from "../pages/organizations/CreateOrganization.jsx";
 import NotFound from "../pages/NotFound.jsx";
 import Settings from "../pages/Settings.jsx";
 
@@ -23,9 +24,13 @@ function AppRoutes() {
     return (
         <BrowserRouter>
             <Routes>
+                {/* Root */}
+                <Route path="/" element={<Navigate to="/login" replace />} />
+
                 {/* Public Routes */}
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
+                <Route path="/organization/create" element={<CreateOrganization />} />
 
                 {/* Authenticated Routes */}
                 <Route element={<ProtectedRoute />}>
@@ -49,7 +54,9 @@ function AppRoutes() {
 
                         <Route path="/tickets" element={<Tickets />} />
                         <Route path="/tickets/:id" element={<TicketDetails />} />
-                        <Route path="/tickets/create" element={<CreateTicket />} />
+                        <Route element={<RoleProtectedRoute allowedRoles={["admin", "requester"]} />}>
+                            <Route path="/tickets/create" element={<CreateTicket />} />
+                        </Route>
                         <Route path="/categories" element={<Categories />} />
                         <Route path="/settings" element={<Settings />} />
                     </Route>

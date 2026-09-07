@@ -10,6 +10,8 @@ import {
 
 import toast from "react-hot-toast";
 
+import { useAuth } from "../../context/AuthContext.jsx";
+
 import {
     getCategories,
     createCategory,
@@ -18,6 +20,9 @@ import {
 } from "../../services/category.service.js";
 
 function Categories() {
+    const { user } = useAuth();
+    const canManageCategories = user?.role === "admin";
+
     const [categories, setCategories] = useState([]);
 
     const [loading, setLoading] = useState(true);
@@ -47,8 +52,6 @@ function Categories() {
             setError("");
 
             const result = await getCategories();
-
-            console.log("CATEGORIES:", result);
 
             setCategories(result.data);
         } catch (error) {
@@ -239,7 +242,7 @@ function Categories() {
 
                 </div>
 
-                <button
+                {canManageCategories && <button
                     type="button"
                     onClick={() => {
                         if (showForm) {
@@ -261,20 +264,20 @@ function Categories() {
                             Create Category
                         </>
                     )}
-                </button>
+                </button>}
 
             </div>
 
             {/* CREATE / EDIT FORM */}
 
-            {showForm && (
+            {canManageCategories && showForm && (
                 <form
                     onSubmit={
                         editingCategory
                             ? handleEditCategory
                             : handleCreateCategory
                     }
-                    className="rounded-2xl border border-slate-800 bg-slate-900/60 p-6"
+                    className="rounded-2xl border border-white/[0.07] bg-slate-900/80 p-6 shadow-xl shadow-black/10"
                 >
 
                     <h2 className="font-semibold text-white">
@@ -288,11 +291,12 @@ function Categories() {
                         {/* NAME */}
 
                         <div>
-                            <label className="text-sm font-medium text-slate-300">
+                            <label htmlFor="category-name" className="text-sm font-medium text-slate-300">
                                 Category Name
                             </label>
 
                             <input
+                                id="category-name"
                                 type="text"
                                 value={name}
                                 onChange={(event) =>
@@ -310,11 +314,12 @@ function Categories() {
                         {/* DESCRIPTION */}
 
                         <div>
-                            <label className="text-sm font-medium text-slate-300">
+                            <label htmlFor="category-description" className="text-sm font-medium text-slate-300">
                                 Description
                             </label>
 
                             <textarea
+                                id="category-description"
                                 value={description}
                                 onChange={(event) =>
                                     setDescription(
@@ -339,7 +344,7 @@ function Categories() {
                                 creating ||
                                 updating
                             }
-                            className="rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-500 disabled:cursor-not-allowed disabled:opacity-50"
+                            className="rounded-xl bg-indigo-500 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-indigo-950/30 transition hover:bg-indigo-400 disabled:cursor-not-allowed disabled:opacity-50"
                         >
                             {creating || updating
                                 ? "Saving..."
@@ -354,11 +359,11 @@ function Categories() {
 
             {/* CATEGORY TABLE */}
 
-            <div className="overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/60">
+            <div className="overflow-hidden rounded-2xl border border-white/[0.07] bg-slate-900/80 shadow-xl shadow-black/10">
 
                 {/* TABLE HEADER */}
 
-                <div className="grid grid-cols-[1fr_2fr_100px_100px] gap-4 border-b border-slate-800 px-5 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500">
+                <div className="hidden grid-cols-[1fr_2fr_100px_100px] gap-4 border-b border-white/6 bg-white/2.5 px-5 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500 md:grid">
 
                     <span>Name</span>
 
@@ -382,25 +387,28 @@ function Categories() {
 
                         <div
                             key={category._id}
-                            className="grid grid-cols-[1fr_2fr_100px_100px] gap-4 border-b border-slate-800/80 px-5 py-4 last:border-b-0"
+                            className="grid gap-3 border-b border-white/5 px-5 py-4 transition hover:bg-indigo-500/4.5 last:border-b-0 md:grid-cols-[1fr_2fr_100px_100px] md:gap-4"
                         >
 
                             {/* NAME */}
 
-                            <div className="text-sm font-medium text-white">
+                            <div className="flex items-center justify-between gap-3 text-sm font-medium text-white md:block">
+                                <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-400 md:hidden">Name</span>
                                 {category.name}
                             </div>
 
                             {/* DESCRIPTION */}
 
-                            <div className="text-sm text-slate-400">
+                            <div className="flex items-center justify-between gap-3 text-sm text-slate-400 md:block">
+                                <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-400 md:hidden">Description</span>
                                 {category.description ||
                                     "No description"}
                             </div>
 
                             {/* STATUS */}
 
-                            <div>
+                            <div className="flex items-center justify-between gap-3 md:block">
+                                <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-400 md:hidden">Status</span>
 
                                 <span className="rounded-full bg-emerald-500/10 px-2.5 py-1 text-xs font-medium text-emerald-400">
                                     Active
@@ -410,11 +418,12 @@ function Categories() {
 
                             {/* ACTIONS */}
 
-                            <div className="flex items-center gap-1">
+                            <div className="flex items-center justify-between gap-3 md:justify-start">
+                                <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-400 md:hidden">Actions</span>
 
                                 {/* EDIT */}
 
-                                <button
+                                {canManageCategories && <button
                                     type="button"
                                     onClick={() => {
                                         setEditingCategory(
@@ -436,11 +445,11 @@ function Categories() {
                                     title="Edit category"
                                 >
                                     <Pencil size={16} />
-                                </button>
+                                </button>}
 
                                 {/* DEACTIVATE */}
 
-                                <button
+                                {canManageCategories && <button
                                     type="button"
                                     onClick={() =>
                                         handleDeactivateCategory(
@@ -455,7 +464,7 @@ function Categories() {
                                     title="Deactivate category"
                                 >
                                     <Trash2 size={16} />
-                                </button>
+                                </button>}
 
                             </div>
 

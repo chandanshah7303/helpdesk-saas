@@ -9,11 +9,11 @@ function DashboardLayout() {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
     return (
-        <div className="min-h-screen bg-slate-950 text-white">
+        <div className="dashboard-light min-h-screen bg-slate-50 text-slate-900">
             <div className="flex min-h-screen">
 
                 {/* Desktop Sidebar */}
-                <aside className="hidden w-64 shrink-0 border-r border-slate-800 bg-slate-900 lg:block">
+                <aside className="hidden w-64 shrink-0 border-r border-white/[0.06] bg-slate-900/90 lg:block">
                     <Sidebar />
                 </aside>
 
@@ -30,7 +30,7 @@ function DashboardLayout() {
                         />
 
                         {/* Drawer */}
-                        <aside className="relative z-10 h-full w-64 border-r border-slate-800 bg-slate-900">
+                        <aside className="relative z-10 h-full w-64 border-r border-white/[0.06] bg-slate-900">
                             <div className="absolute right-3 top-4 z-20">
                                 <button
                                     type="button"
@@ -53,14 +53,14 @@ function DashboardLayout() {
                 <div className="flex min-w-0 flex-1 flex-col">
 
                     {/* Topbar */}
-                    <header className="border-b border-slate-800 bg-slate-900">
+                    <header className="border-b border-white/[0.06] bg-slate-900/80 backdrop-blur-xl">
                         <Topbar
                             onMenuClick={() => setMobileMenuOpen(true)}
                         />
                     </header>
 
                     {/* Page Content */}
-                    <main className="flex-1 p-6">
+                    <main className="flex-1 p-4 sm:p-6 lg:p-8">
                         <Outlet />
                     </main>
 
