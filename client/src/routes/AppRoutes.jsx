@@ -1,6 +1,7 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import Login from "../pages/auth/Login.jsx";
+import Home from "../pages/Home.jsx";
 import Register from "../pages/auth/Register.jsx";
 import CreateOrganization from "../pages/organizations/CreateOrganization.jsx";
 import NotFound from "../pages/NotFound.jsx";
@@ -25,7 +26,7 @@ function AppRoutes() {
         <BrowserRouter>
             <Routes>
                 {/* Root */}
-                <Route path="/" element={<Navigate to="/login" replace />} />
+                <Route path="/" element={<Home />} />
 
                 {/* Public Routes */}
                 <Route path="/login" element={<Login />} />
