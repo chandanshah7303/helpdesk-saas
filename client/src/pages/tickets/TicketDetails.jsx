@@ -429,12 +429,19 @@ function TicketDetails() {
                                     onClick={() =>
                                         handleStatusUpdate("in_progress")
                                     }
-                                    disabled={updatingStatus}
+                                    disabled={updatingStatus || !ticket.assignedTo}
+                                    title={
+                                        ticket.assignedTo
+                                            ? "Start working on this ticket"
+                                            : "Assign an agent before starting"
+                                    }
                                     className="rounded-xl bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-500 disabled:cursor-not-allowed disabled:opacity-50"
                                 >
                                     {updatingStatus
                                         ? "Updating..."
-                                        : "Start Working"}
+                                        : ticket.assignedTo
+                                          ? "Start Working"
+                                          : "Assign an Agent First"}
                                 </button>
                             )}
 
