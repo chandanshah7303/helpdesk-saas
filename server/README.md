@@ -47,3 +47,13 @@ Resolved
     │ Admin closes
     ▼
 Closed
+
+## Deployment Configuration
+
+Set these environment variables in the Render service before deploying:
+
+```env
+CLIENT_ORIGIN=https://helpdesk-saas-six.vercel.app
+```
+
+After changing an environment variable, trigger a new deploy. The value must match the frontend origin exactly, without a trailing slash.
