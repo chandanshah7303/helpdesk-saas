@@ -78,7 +78,15 @@ function Register() {
 
       navigate("/login");
     } catch (error) {
+      const validationErrors = error.response?.data?.errors;
+      const validationMessage = Array.isArray(validationErrors)
+        ? validationErrors
+            .map((item) => (typeof item === "string" ? item : item.message))
+            .filter(Boolean)
+            .join(" ")
+        : "";
       const message =
+        validationMessage ||
         error.response?.data?.message ||
         "Unable to register. Please try again.";
 
@@ -580,7 +588,7 @@ function Register() {
                             <path
                               strokeLinecap="round"
                               strokeLinejoin="round"
-                              d="M2.25 12s3.75-6 9.75-6 9.75 6 9.75 6-3.75 6-9.75 6-9.75-6-9.75-9.75-6-9.75-6z"
+                              d="M2.25 12s3.75-6 9.75-6 9.75 6 9.75 6-3.75 6-9.75 6-9.75-6-9.75-6Z"
                             />
 
                             <circle
